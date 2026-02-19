@@ -4,7 +4,7 @@ import com.example.myapplication.domain.Product
 import retrofit2.http.GET
 
 data class ProductResponse(
-    val products: List<Product>
+    val products: List<ProductDto>
 )
 
 interface ProductApiService {
