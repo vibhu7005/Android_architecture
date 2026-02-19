@@ -1,9 +1,9 @@
 package com.example.myapplication.presenter
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.domain.FetchProductsUseCase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -22,19 +22,22 @@ class ProductViewModel(private val fetchProductsUseCase: FetchProductsUseCase) :
         fetchProducts()
     }
 
-     fun serveIntents(intent : ProductIntent) {
-        when(intent) {
+    fun serveIntents(intent: ProductIntent) {
+        when (intent) {
             ProductIntent.RefreshProducts -> fetchProducts()
         }
     }
 
     private fun fetchProducts() {
+        Log.d("vaibhav", "method called")
         _productUiState.value = ProductUiState.Loading
         viewModelScope.launch {
             fetchProductsUseCase()
                 .onSuccess {
+                    Log.d("vaibhav", "Success")
                     _productUiState.value = ProductUiState.Success(it)
                 }.onFailure {
+                    Log.d("vaibhav", "onFailure")
                     _productEventFlow.emit(ProductEvent.Error(it.message.orEmpty()))
                 }
         }

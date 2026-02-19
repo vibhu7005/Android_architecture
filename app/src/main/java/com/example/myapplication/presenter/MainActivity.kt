@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication.data.ProductRepositoryImpl
+import com.example.myapplication.data.RetrofitInstance
 import com.example.myapplication.domain.FetchProductsUseCase
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
@@ -30,6 +31,8 @@ class MainActivity : ComponentActivity() {
         
         // Create ViewModel with factory
         val viewModel = ViewModelProvider(this, factory)[ProductViewModel::class.java]
+        //todo remove test code after checking
+        viewModel.serveIntents(ProductIntent.RefreshProducts)
 
 
         setContent {
