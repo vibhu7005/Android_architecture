@@ -1,5 +1,6 @@
 package com.example.myapplication.data
 
+import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -7,9 +8,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
     
-    private const val BASE_URL = "https://api.example.com/"
+    private const val BASE_URL = "https://dummyjson.com/"
     
-    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+    private val loggingInterceptor = HttpLoggingInterceptor { message ->
+        Log.d("API_LOG", message)
+    }.apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
     

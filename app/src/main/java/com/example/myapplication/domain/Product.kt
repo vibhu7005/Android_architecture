@@ -1,12 +1,13 @@
 package com.example.myapplication.domain
 
-data class Product(val id : String,
-    val title : String,
-    val price : Int,
-    val discountPrice : Int,
-    val rating : Int,
-    val thumbnailUrl : String,
-    val brand : String,
-    val category : String
+data class Product(
+    val id: Int,
+    val title: String,
+    val price: Double,
+    val discountPercentage: Double,
+    val rating: Double,
+    val thumbnail: String,
+    val brand: String,
+    val category: String
 )
 

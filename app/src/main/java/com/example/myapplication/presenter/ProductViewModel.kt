@@ -34,10 +34,10 @@ class ProductViewModel(private val fetchProductsUseCase: FetchProductsUseCase) :
         viewModelScope.launch {
             fetchProductsUseCase()
                 .onSuccess {
-                    Log.d("vaibhav", "Success")
+                    Log.d("vaibhav", "Success $it")
                     _productUiState.value = ProductUiState.Success(it)
                 }.onFailure {
-                    Log.d("vaibhav", "onFailure")
+                    Log.d("vaibhav", "onFailure ${it.message}")
                     _productEventFlow.emit(ProductEvent.Error(it.message.orEmpty()))
                 }
         }

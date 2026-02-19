@@ -6,9 +6,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class ProductRepositoryImpl() : ProductRepository {
-    private val instance = RetrofitInstance.productApiService
     override suspend fun fetchProducts(): Result<List<Product>> =
         withContext(Dispatchers.IO) {
-            runCatching { instance.getProducts() }
+            runCatching { RetrofitInstance.productApiService.getProducts().products }
         }
 }
