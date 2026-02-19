@@ -9,7 +9,7 @@ data class ProductDto(
     val discountPercentage: Double,
     val rating: Double,
     val thumbnail: String,
-    val brand: String,
+    val brand: String? =null,
     val category: String
 ) {
     fun toProduct(): Product = Product(
@@ -19,7 +19,7 @@ data class ProductDto(
         discountPercentage = discountPercentage,
         rating = rating,
         thumbnail = thumbnail,
-        brand = brand,
+        brand = brand.orEmpty(),
         category = category
     )
 

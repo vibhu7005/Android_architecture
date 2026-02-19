@@ -38,6 +38,7 @@ class ProductViewModel(private val fetchProductsUseCase: FetchProductsUseCase) :
                     _productUiState.value = ProductUiState.Success(it)
                 }.onFailure {
                     Log.d("vaibhav", "onFailure ${it.message}")
+                    _productUiState.value = ProductUiState.IDLE
                     _productEventFlow.emit(ProductEvent.Error(it.message.orEmpty()))
                 }
         }

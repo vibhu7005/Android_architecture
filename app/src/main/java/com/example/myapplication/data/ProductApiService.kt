@@ -8,6 +8,6 @@ data class ProductResponse(
 )
 
 interface ProductApiService {
-    @GET("products")
+    @GET("proucts")
     suspend fun getProducts() : ProductResponse
 }
