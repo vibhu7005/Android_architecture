@@ -5,9 +5,12 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -29,10 +32,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import com.example.myapplication.di.DI
 import com.example.myapplication.domain.Product
 import com.example.myapplication.ui.theme.MyApplicationTheme
@@ -87,7 +92,11 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    ProductUiState.IDLE -> {}
+                    ProductUiState.IDLE -> {
+                        Text(
+                            text = "Failed to load products. Please try again.",
+                        )
+                    }
                 }
             }
         }
@@ -95,9 +104,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable fun ProductItem(product: Product) {
-
-    Card {
-
+    Column {
+        AsyncImage(
+            model = product.thumbnail, // The image URL
+            contentDescription = "Sample Image", // For accessibility
+            modifier = Modifier.size(200.dp)
+        )
+        Spacer(modifier = Modifier.padding(8.dp))
+        Text(modifier = Modifier.fillMaxWidth(), text = product.title, textAlign = TextAlign.Center)
     }
 }
 
