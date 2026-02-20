@@ -1,5 +1,5 @@
 package com.example.myapplication.domain
 
-class FetchProductsUseCase(private val repository: ProductRepository) {
+class FetchPokemonUseCase(private val repository: PokemonRepository) {
     suspend operator fun invoke() = repository.fetchProducts()
 }

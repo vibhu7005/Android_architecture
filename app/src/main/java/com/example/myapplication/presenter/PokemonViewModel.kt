@@ -3,43 +3,43 @@ package com.example.myapplication.presenter
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.domain.FetchProductsUseCase
+import com.example.myapplication.domain.FetchPokemonUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ProductViewModel(private val fetchProductsUseCase: FetchProductsUseCase) : ViewModel() {
+class PokemonViewModel(private val fetchProductsUseCase: FetchPokemonUseCase) : ViewModel() {
 
-    private val _productUiState = MutableStateFlow<ProductUiState>(ProductUiState.Loading)
+    private val _productUiState = MutableStateFlow<PokemonUiState>(PokemonUiState.Loading)
     val productUiState = _productUiState.asStateFlow()
 
-    private val _productEventFlow = MutableSharedFlow<ProductEvent>()
+    private val _productEventFlow = MutableSharedFlow<PokemonEvent>()
     val productEventFlow = _productEventFlow.asSharedFlow()
 
     init {
-        fetchProducts()
+        fetchPokemon()
     }
 
-    fun serveIntents(intent: ProductIntent) {
+    fun serveIntents(intent: PokemonIntent) {
         when (intent) {
-            ProductIntent.RefreshProducts -> fetchProducts()
+            PokemonIntent.Refresh -> fetchPokemon()
         }
     }
 
-    private fun fetchProducts() {
+    private fun fetchPokemon() {
         Log.d("vaibhav", "method called")
-        _productUiState.value = ProductUiState.Loading
+        _productUiState.value = PokemonUiState.Loading
         viewModelScope.launch {
             fetchProductsUseCase()
                 .onSuccess {
                     Log.d("vaibhav", "Success $it")
-                    _productUiState.value = ProductUiState.Success(it)
+                    _productUiState.value = PokemonUiState.Success(it)
                 }.onFailure {
                     Log.d("vaibhav", "onFailure ${it.message}")
-                    _productUiState.value = ProductUiState.IDLE
-                    _productEventFlow.emit(ProductEvent.Error(it.message.orEmpty()))
+                    _productUiState.value = PokemonUiState.IDLE
+                    _productEventFlow.emit(PokemonEvent.Error(it.message.orEmpty()))
                 }
         }
     }

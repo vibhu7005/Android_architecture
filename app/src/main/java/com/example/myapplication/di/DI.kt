@@ -3,12 +3,12 @@ package com.example.myapplication.di
 import com.example.myapplication.data.ProductApiService
 import com.example.myapplication.data.ProductRepositoryImpl
 import com.example.myapplication.data.RetrofitInstance
-import com.example.myapplication.domain.FetchProductsUseCase
-import com.example.myapplication.domain.ProductRepository
+import com.example.myapplication.domain.FetchPokemonUseCase
+import com.example.myapplication.domain.PokemonRepository
 
 object DI {
 
     val productApiService : ProductApiService by lazy { RetrofitInstance.productApiService }
-    val productRepository: ProductRepository by lazy { ProductRepositoryImpl(productApiService) }
-    val fetchProductsUseCase: FetchProductsUseCase by lazy { FetchProductsUseCase(productRepository) }
+    val productRepository: PokemonRepository by lazy { ProductRepositoryImpl(productApiService) }
+    val fetchProductsUseCase: FetchPokemonUseCase by lazy { FetchPokemonUseCase(productRepository) }
 }
