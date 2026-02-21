@@ -33,15 +33,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
-import com.example.myapplication.di.DI
+import com.example.myapplication.domain.FetchProductsUseCase
 import com.example.myapplication.domain.Product
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 val LocalNavController = compositionLocalOf<NavController> {
     error("No NavController provided")
 }
 
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var useCase: FetchProductsUseCase
     private lateinit var viewModel: ProductViewModel
 
 
@@ -51,12 +58,9 @@ class MainActivity : ComponentActivity() {
 
 
         // DI setup
-        val factory = GenericViewModelFactory(ProductViewModel::class.java) {
-            ProductViewModel(DI.fetchProductsUseCase)
-        }
 
         // Create ViewModel with factory
-        viewModel = ViewModelProvider(this, factory)[ProductViewModel::class.java]
+        viewModel = ViewModelProvider(this)[ProductViewModel::class.java]
 
         setContent {
             MyApplicationTheme {
