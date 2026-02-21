@@ -5,9 +5,8 @@ import com.example.myapplication.domain.ProductRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+
 class ProductRepositoryImpl(private val apiService: ProductApiService) : ProductRepository {
     override suspend fun fetchProducts(): Result<List<Product>> =
-        withContext(Dispatchers.IO) {
-            runCatching { apiService.getProducts().products.map { it.toProduct()} }
-        }
+        runCatching { apiService.getProducts().products.map { it.toProduct() } }
 }

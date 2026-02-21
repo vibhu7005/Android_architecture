@@ -7,7 +7,6 @@ import com.example.myapplication.domain.FetchProductsUseCase
 import com.example.myapplication.domain.ProductRepository
 
 object DI {
-
     val productApiService : ProductApiService by lazy { RetrofitInstance.productApiService }
     val productRepository: ProductRepository by lazy { ProductRepositoryImpl(productApiService) }
     val fetchProductsUseCase: FetchProductsUseCase by lazy { FetchProductsUseCase(productRepository) }
