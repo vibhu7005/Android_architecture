@@ -33,8 +33,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
-import com.example.myapplication.domain.FetchProductsUseCase
-import com.example.myapplication.domain.Product
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -47,8 +45,7 @@ val LocalNavController = compositionLocalOf<NavController> {
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var useCase: FetchProductsUseCase
+
     private lateinit var viewModel: ProductViewModel
 
 
@@ -64,90 +61,26 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyApplicationTheme {
-                val navController = rememberNavController()
-                CompositionLocalProvider(LocalNavController provides navController) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = Routes.ProductList.route
-                    ) {
-                        composable(Routes.ProductList.route) {
-                            ProductListScreen(viewModel)
-                        }
-                        composable(Routes.ProductDetail.route) {
-                            DetailScreen()
-                        }
-                    }
-                }
+//                val navController = rememberNavController()
+//                CompositionLocalProvider(LocalNavController provides navController) {
+//                    NavHost(
+//                        navController = navController,
+//                        startDestination = Routes.ProductList.route
+//                    ) {
+//                        composable(Routes.ProductList.route) {
+//                            ProductListScreen(viewModel)
+//                        }
+//                        composable(Routes.ProductDetail.route) {
+//                            DetailScreen()
+//                        }
+//                    }
+//                }
             }
         }
 
     }
 }
 
-@Composable
-fun ProductListScreen(viewModel: ProductViewModel) {
-    val productState by viewModel.productUiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-
-    LaunchedEffect(Unit) {
-        viewModel.productEventFlow.collect {
-            when (it) {
-                is ProductEvent.Error -> {
-                    Toast.makeText(
-                        context,
-                        it.message,
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                }
-            }
-        }
-    }
-
-
-    val state = productState
-    val scrollState = rememberLazyGridState()
-    when (state) {
-        ProductUiState.Loading -> {
-            Text(
-                text = "Loading products...",
-            )
-        }
-
-        is ProductUiState.Success -> {
-            LazyVerticalGrid(columns = GridCells.Fixed(2), state = scrollState) {
-                items(
-                    state.products,
-                    key = { it.id }) {
-                    ProductItem(product = it)
-                }
-            }
-        }
-
-        ProductUiState.Idle -> {}
-    }
-}
-
-@Composable
-fun ProductItem(product: Product) {
-    val nav = LocalNavController.current
-    Column(modifier = Modifier.clickable {
-        nav.navigate(Routes.ProductDetail.createRoute(product.id))
-//        }
-    }) {
-        AsyncImage(
-            model = product.thumbnail, // The image URL
-            contentDescription = "Sample Image", // For accessibility
-            modifier = Modifier.size(200.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = product.title,
-            textAlign = TextAlign.Center
-        )
-    }
-}
 
 
 @Preview(showBackground = true)
