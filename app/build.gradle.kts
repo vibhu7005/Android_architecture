@@ -64,6 +64,10 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    
+    // Room
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

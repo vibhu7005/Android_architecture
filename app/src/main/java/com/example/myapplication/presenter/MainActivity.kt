@@ -28,15 +28,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
-import com.example.myapplication.domain.FetchProductsUseCase
-import com.example.myapplication.domain.Product
+import com.example.myapplication.domain.AddTodoUseCase
+import com.example.myapplication.domain.Todo
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 val LocalNavController = compositionLocalOf<NavController> {
@@ -48,35 +50,48 @@ val LocalNavController = compositionLocalOf<NavController> {
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var useCase: FetchProductsUseCase
-    private lateinit var viewModel: ProductViewModel
+    lateinit var useCase: AddTodoUseCase
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        lifecycleScope.launch {
+            useCase(
+                Todo(
+                    taskDescription = "Sample Todo",
+                    eta = System.currentTimeMillis() + 100000000
+                )
+            ).onSuccess {
+                println("Succeeded")
+            }
+                .onFailure {
+                    println("failed")
+                }
+        }
 
 
         // DI setup
 
         // Create ViewModel with factory
-        viewModel = ViewModelProvider(this)[ProductViewModel::class.java]
+//        viewModel = ViewModelProvider(this)[ProductViewModel::class.java]
 
         setContent {
             MyApplicationTheme {
                 val navController = rememberNavController()
                 CompositionLocalProvider(LocalNavController provides navController) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = Routes.ProductList.route
-                    ) {
-                        composable(Routes.ProductList.route) {
-                            ProductListScreen(viewModel)
-                        }
-                        composable(Routes.ProductDetail.route) {
-                            DetailScreen()
-                        }
-                    }
+                    Text("dfdf")
+//                    NavHost(
+//                        navController = navController,
+//                        startDestination = Routes.ProductList.route
+//                    ) {
+////                        composable(Routes.ProductList.route) {
+////                            ProductListScreen(viewModel)
+////                        }
+////                        composable(Routes.ProductDetail.route) {
+////                            DetailScreen()
+////                        }
+//                    }
                 }
             }
         }
@@ -84,70 +99,70 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun ProductListScreen(viewModel: ProductViewModel) {
-    val productState by viewModel.productUiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-
-    LaunchedEffect(Unit) {
-        viewModel.productEventFlow.collect {
-            when (it) {
-                is ProductEvent.Error -> {
-                    Toast.makeText(
-                        context,
-                        it.message,
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                }
-            }
-        }
-    }
-
-
-    val state = productState
-    val scrollState = rememberLazyGridState()
-    when (state) {
-        ProductUiState.Loading -> {
-            Text(
-                text = "Loading products...",
-            )
-        }
-
-        is ProductUiState.Success -> {
-            LazyVerticalGrid(columns = GridCells.Fixed(2), state = scrollState) {
-                items(
-                    state.products,
-                    key = { it.id }) {
-                    ProductItem(product = it)
-                }
-            }
-        }
-
-        ProductUiState.Idle -> {}
-    }
-}
-
-@Composable
-fun ProductItem(product: Product) {
-    val nav = LocalNavController.current
-    Column(modifier = Modifier.clickable {
-        nav.navigate(Routes.ProductDetail.createRoute(product.id))
+//@Composable
+//fun ProductListScreen(viewModel: ProductViewModel) {
+//    val productState by viewModel.productUiState.collectAsStateWithLifecycle()
+//    val context = LocalContext.current
+//
+//    LaunchedEffect(Unit) {
+//        viewModel.productEventFlow.collect {
+//            when (it) {
+//                is ProductEvent.Error -> {
+//                    Toast.makeText(
+//                        context,
+//                        it.message,
+//                        Toast.LENGTH_SHORT
+//                    )
+//                        .show()
+//                }
+//            }
 //        }
-    }) {
-        AsyncImage(
-            model = product.thumbnail, // The image URL
-            contentDescription = "Sample Image", // For accessibility
-            modifier = Modifier.size(200.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = product.title,
-            textAlign = TextAlign.Center
-        )
-    }
-}
+//    }
+//
+//
+//    val state = productState
+//    val scrollState = rememberLazyGridState()
+//    when (state) {
+//        ProductUiState.Loading -> {
+//            Text(
+//                text = "Loading products...",
+//            )
+//        }
+//
+//        is ProductUiState.Success -> {
+//            LazyVerticalGrid(columns = GridCells.Fixed(2), state = scrollState) {
+//                items(
+//                    state.products,
+//                    key = { it.id }) {
+//                    ProductItem(product = it)
+//                }
+//            }
+//        }
+//
+//        ProductUiState.Idle -> {}
+//    }
+//}
+//
+//@Composable
+//fun ProductItem(product: Product) {
+//    val nav = LocalNavController.current
+//    Column(modifier = Modifier.clickable {
+//        nav.navigate(Routes.ProductDetail.createRoute(product.id))
+////        }
+//    }) {
+//        AsyncImage(
+//            model = product.thumbnail, // The image URL
+//            contentDescription = "Sample Image", // For accessibility
+//            modifier = Modifier.size(200.dp)
+//        )
+//        Spacer(modifier = Modifier.height(8.dp))
+//        Text(
+//            modifier = Modifier.fillMaxWidth(),
+//            text = product.title,
+//            textAlign = TextAlign.Center
+//        )
+//    }
+//}
 
 
 @Preview(showBackground = true)
