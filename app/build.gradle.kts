@@ -57,6 +57,35 @@ dependencies {
 
     implementation(libs.coil.compose)
     implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    implementation("io.coil-kt.coil3:coil-compose:3.0.1")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    testImplementation("junit:junit:4.13.2")
+
+    // ===== 2. Coroutines Test (for ViewModel, UseCase, Repository) =====
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    // ===== 3. Compose Test (UI testing) =====
+    testImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // ===== 4. Robolectric (run Compose tests on JVM, no emulator) =====
+    testImplementation("org.robolectric:robolectric:4.11.1")
+
+    // ===== 5. Optional but useful =====
+
+    // Turbine — easier testing of Flows (StateFlow, SharedFlow)
+    testImplementation("app.cash.turbine:turbine:1.0.0")
+
+    // MockK — mocking library for Kotlin (if you prefer mocks over fakes)
+    testImplementation("io.mockk:mockk:1.13.8")
+
+    // Truth — more readable assertions (Google's alternative to assertEquals)
+    testImplementation("com.google.truth:truth:1.1.5")
     implementation(libs.coil.network.okhttp)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -65,4 +94,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    testImplementation("app.cash.turbine:turbine:1.0.0")
+
 }

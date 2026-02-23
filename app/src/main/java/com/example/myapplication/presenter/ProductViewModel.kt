@@ -29,15 +29,14 @@ class ProductViewModel(private val fetchProductsUseCase: FetchProductsUseCase) :
     }
 
     private fun fetchProducts() {
-        Log.d("vaibhav", "method called")
         _productUiState.value = ProductUiState.Loading
         viewModelScope.launch {
             fetchProductsUseCase()
                 .onSuccess {
-                    Log.d("vaibhav", "Success $it")
+//                    Log.d("vaibhav", "Success $it")
                     _productUiState.value = ProductUiState.Success(it)
                 }.onFailure {
-                    Log.d("vaibhav", "onFailure ${it.message}")
+//                    Log.d("vaibhav", "onFailure ${it.message}")
                     _productUiState.value = ProductUiState.Idle
                     _productEventFlow.emit(ProductEvent.Error(it.message.orEmpty()))
                 }
