@@ -1,5 +1,7 @@
 package com.example.myapplication.data
 
-@Entity(ta)
+import androidx.room.Entity
+
+@Entity(tableName = "notes")
 class NotesEntity {
 }
