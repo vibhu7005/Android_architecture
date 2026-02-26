@@ -32,4 +32,10 @@ class ExpenseViewModel @Inject constructor(
             expenseRepo.deleteExpense(expense)
         }
     }
+
+    fun updateExpense(expense: Expense) {
+        viewModelScope.launch {
+            expenseRepo.updateExpense(expense)
+        }
+    }
 }

@@ -105,10 +105,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         val expenseViewModel: ExpenseViewModel = viewModel()
                         ExpenseTableScreen(
-                            viewModel = expenseViewModel,
-                            onEditClick = { expense ->
-                                // Handle edit click — navigate to edit screen, show dialog, etc.
-                            }
+                            viewModel = expenseViewModel
                         )
                     }
                 }
