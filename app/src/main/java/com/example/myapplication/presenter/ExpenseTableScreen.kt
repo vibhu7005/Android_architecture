@@ -37,6 +37,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,7 +60,6 @@ import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
 import com.example.myapplication.R
 
-// ─── Colors ───────────────────────────────────────────────────────────────────
 private val BackgroundColor = Color(0xFFF5F5F5)
 private val CardBackground = Color.White
 private val HeaderTextColor = Color(0xFFB0B0B0)
@@ -75,7 +75,6 @@ private val FieldBorderColor = Color(0xFFD5D5D5)
 private val DollarPrefixColor = Color(0xFFB0B0B0)
 private val ErrorColor = Color(0xFFD32F2F)
 
-// ─── Main Screen ──────────────────────────────────────────────────────────────
 
 @Composable
 fun ExpenseTableScreen(
@@ -83,6 +82,13 @@ fun ExpenseTableScreen(
 ) {
     val context = LocalContext.current
     val expenses by viewModel.expenses.collectAsState()
+
+    // Collect error messages from SharedFlow
+    LaunchedEffect(Unit) {
+        viewModel.errorMessage.collect { errorMessage ->
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     var editingExpenseId by remember { mutableStateOf<Int?>(null) }
 
@@ -117,8 +123,9 @@ fun ExpenseTableScreen(
             colors = CardDefaults.cardColors(containerColor = CardBackground),
             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
         ) {
+
+            //vaibhav lazy column with header + rows
             LazyColumn {
-                // ── Header ────────────────────────────────────────────
                 item(key = "header") {
                     ExpenseTableHeader(
                         modifier = Modifier.alpha(if (isEditing) backgroundAlpha else 1f)
@@ -126,11 +133,9 @@ fun ExpenseTableScreen(
                     HorizontalDivider(color = DividerColor, thickness = 1.dp)
                 }
 
-                // ── Expense Rows ──────────────────────────────────────
                 items(expenses, key = { it.expenseId }) { expense ->
                     val isThisEditing = editingExpenseId == expense.expenseId
 
-                    // Show normal row when NOT the one being edited
                     if (!isThisEditing) {
                         ExpenseRow(
                             expense = expense,
@@ -151,7 +156,6 @@ fun ExpenseTableScreen(
                         )
                     }
 
-                    // Inline edit form — animated expand/collapse
                     AnimatedVisibility(
                         visible = isThisEditing,
                         enter = expandVertically(
@@ -234,7 +238,6 @@ fun ExpenseTableScreen(
     }
 }
 
-// ─── Header ───────────────────────────────────────────────────────────────────
 
 @Composable
 private fun ExpenseTableHeader(modifier: Modifier = Modifier) {
@@ -311,7 +314,6 @@ private fun ExpenseTableHeader(modifier: Modifier = Modifier) {
     }
 }
 
-// ─── Normal Data Row ──────────────────────────────────────────────────────────
 
 @Composable
 private fun ExpenseRow(
@@ -371,7 +373,6 @@ private fun ExpenseRow(
     }
 }
 
-// ─── Inline Edit Form ─────────────────────────────────────────────────────────
 
 @Composable
 private fun InlineEditForm(
@@ -417,7 +418,6 @@ private fun InlineEditForm(
             .background(CardBackground)
             .padding(horizontal = 8.dp, vertical = 8.dp)
     ) {
-        // ── Expense Field ─────────────────────────────────────────
         EditFieldRow(
             iconRes = R.drawable.ic_expense,
             label = "Expense"
@@ -531,13 +531,11 @@ private fun InlineEditForm(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // ── Action Buttons ────────────────────────────────────────
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Cancel — outlined
             OutlinedButton(
                 onClick = onCancel,
                 shape = RoundedCornerShape(12.dp),
@@ -588,7 +586,6 @@ private fun InlineEditForm(
     }
 }
 
-// ─── Reusable label + field row ───────────────────────────────────────────────
 
 @Composable
 private fun EditFieldRow(
