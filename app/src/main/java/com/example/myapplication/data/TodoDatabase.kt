@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.myapplication.domain.NotesRepo
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -23,14 +24,14 @@ object DatabaseModule {
     }
 
     @Provides
-    fun provideTodoDao(db: TodoDatabase): TodoDao = db.todoDao()
+    fun provideTodoDao(db: TodoDatabase): NotesDao = db.todoDao()
 }
 
 
-@Database(entities = [TodoEntity::class], version = 1, exportSchema = false)
+@Database(entities = [NotesEntity::class], version = 1, exportSchema = false)
 abstract class TodoDatabase : RoomDatabase() {
 
-    abstract fun todoDao(): TodoDao
+    abstract fun todoDao(): NotesDao
 
     companion object {
         const val NAME = "todo_db"
@@ -47,6 +48,6 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindProductRepository(
-        impl: TodoRepositoryImpl
-    ): TodoRepository
+        impl: RepoImpl
+    ): NotesRepo
 }

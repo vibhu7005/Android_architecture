@@ -33,13 +33,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
+import com.example.myapplication.domain.AddNotesUseCase
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 val LocalNavController = compositionLocalOf<NavController> {
@@ -50,6 +53,9 @@ val LocalNavController = compositionLocalOf<NavController> {
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @Inject
+     lateinit var useCase: AddNotesUseCase
+
 
 //    private lateinit var viewModel: ProductViewModel
 
@@ -57,6 +63,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        lifecycleScope.launch {
+            useCase.invoke("ffdf", "fdddf")
+        }
 
 
         // DI setup

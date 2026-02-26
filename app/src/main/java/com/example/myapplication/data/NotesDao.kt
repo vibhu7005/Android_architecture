@@ -8,7 +8,7 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface TodoDao {
+interface NotesDao {
     @Query("SELECT * FROM notes")
     fun getAllTodos(): Flow<List<NotesEntity>>
 
@@ -19,5 +19,5 @@ interface TodoDao {
     suspend fun deleteTodo(entity: NotesEntity)
 
     @Query("SELECT COUNT(*) FROM notes")
-    suspend fun getNotesCount()
+    suspend fun getNotesCount() : Int
 }
