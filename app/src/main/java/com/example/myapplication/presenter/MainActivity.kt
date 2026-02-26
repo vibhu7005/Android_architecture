@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +26,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -96,13 +99,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    val expenseViewModel: ExpenseViewModel = viewModel()
-                    ExpenseTableScreen(
-                        viewModel = expenseViewModel,
-                        onEditClick = { expense ->
-                            // Handle edit click — navigate to edit screen, show dialog, etc.
-                        }
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        val expenseViewModel: ExpenseViewModel = viewModel()
+                        ExpenseTableScreen(
+                            viewModel = expenseViewModel,
+                            onEditClick = { expense ->
+                                // Handle edit click — navigate to edit screen, show dialog, etc.
+                            }
+                        )
+                    }
                 }
             }
         }
