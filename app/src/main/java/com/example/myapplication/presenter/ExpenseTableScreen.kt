@@ -108,7 +108,7 @@ fun ExpenseTableScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(BackgroundColor)
-            .padding(horizontal = 16.dp, vertical = 24.dp)
+            .padding(horizontal = 16.dp, vertical = 16.dp)
     ) {
         Card(
             shape = RoundedCornerShape(16.dp),
@@ -239,7 +239,7 @@ private fun ExpenseTableHeader(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 12.dp),
+            .padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
@@ -321,7 +321,7 @@ private fun ExpenseRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 12.dp),
+            .padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -413,7 +413,7 @@ private fun InlineEditForm(
         modifier = Modifier
             .fillMaxWidth()
             .background(CardBackground)
-            .padding(horizontal = 8.dp, vertical = 12.dp)
+            .padding(horizontal = 8.dp, vertical = 8.dp)
     ) {
         // ── Expense Field ─────────────────────────────────────────
         EditFieldRow(
