@@ -54,6 +54,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.domain.Expense
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
 
 // ─── Colors ───────────────────────────────────────────────────────────────────
 private val BackgroundColor = Color(0xFFF5F5F5)
@@ -77,6 +79,7 @@ private val ErrorColor = Color(0xFFD32F2F)
 fun ExpenseTableScreen(
     viewModel: ExpenseViewModel = viewModel()
 ) {
+    val context = LocalContext.current
     val expenses by viewModel.expenses.collectAsState()
 
     var editingExpenseId by remember { mutableStateOf<Int?>(null) }
@@ -85,6 +88,11 @@ fun ExpenseTableScreen(
     var editMethod by remember { mutableStateOf("") }
     var editAmount by remember { mutableStateOf("") }
     var isAmountValid by remember { mutableStateOf(true) }
+    
+    // Track original values to detect changes
+    var originalName by remember { mutableStateOf("") }
+    var originalMethod by remember { mutableStateOf("") }
+    var originalAmount by remember { mutableStateOf("") }
 
     val isEditing = editingExpenseId != null
 
@@ -129,7 +137,10 @@ fun ExpenseTableScreen(
                             onEditClick = {
                                 editName = expense.expenseName
                                 editMethod = expense.method
-                                editAmount = expense.amount.toString()
+                                editAmount = expense.amount.toLong().toString()
+                                originalName = expense.expenseName
+                                originalMethod = expense.method
+                                originalAmount = expense.amount.toLong().toString()
                                 isAmountValid = true
                                 editingExpenseId = expense.expenseId
                             }
@@ -159,21 +170,46 @@ fun ExpenseTableScreen(
                             method = editMethod,
                             amount = editAmount,
                             isAmountValid = isAmountValid,
-                            onNameChange = { editName = it },
-                            onMethodChange = { editMethod = it },
+                            originalName = originalName,
+                            originalMethod = originalMethod,
+                            originalAmount = originalAmount,
+                            onNameChange = { newValue ->
+                                if (newValue.length <= 25) {
+                                    editName = newValue
+                                } else {
+                                    Toast.makeText(context, "Maximum 25 characters allowed", Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                            onMethodChange = { newValue ->
+                                if (newValue.length <= 25) {
+                                    editMethod = newValue
+                                } else {
+                                    Toast.makeText(context, "Maximum 25 characters allowed", Toast.LENGTH_SHORT).show()
+                                }
+                            },
                             onAmountChange = { newValue ->
-                                editAmount = newValue
-                                isAmountValid = newValue.isEmpty() || newValue.toDoubleOrNull() != null
+                                if (newValue.length <= 9) {
+                                    editAmount = newValue
+                                    isAmountValid = newValue.isEmpty() || (newValue.all { it.isDigit() } && newValue.toLongOrNull() != null)
+                                } else {
+                                    Toast.makeText(context, "Expense value cannot exceed 9 digits", Toast.LENGTH_SHORT).show()
+                                }
                             },
                             onCancel = {
                                 editingExpenseId = null
                                 isAmountValid = true
+                                editName = ""
+                                editMethod = ""
+                                editAmount = ""
+                                originalName = ""
+                                originalMethod = ""
+                                originalAmount = ""
                             },
                             onDone = {
                                 val updated = expense.copy(
                                     expenseName = editName.trim(),
                                     method = editMethod.trim(),
-                                    amount = editAmount.toDoubleOrNull() ?: expense.amount
+                                    amount = editAmount.toLongOrNull()?.toDouble() ?: expense.amount
                                 )
                                 viewModel.updateExpense(updated)
                                 editingExpenseId = null
@@ -297,7 +333,7 @@ private fun ExpenseRow(
         )
 
         Text(
-            text = "$${expense.amount}",
+            text = "$${expense.amount.toLong()}",
             modifier = Modifier.weight(1f),
             color = AmountTextColor,
             fontSize = 16.sp,
@@ -327,12 +363,21 @@ private fun InlineEditForm(
     method: String,
     amount: String,
     isAmountValid: Boolean,
+    originalName: String,
+    originalMethod: String,
+    originalAmount: String,
     onNameChange: (String) -> Unit,
     onMethodChange: (String) -> Unit,
     onAmountChange: (String) -> Unit,
     onCancel: () -> Unit,
     onDone: () -> Unit
 ) {
+    val context = LocalContext.current
+    
+    // Check if any changes have been made
+    val hasChanges = name.trim() != originalName || method.trim() != originalMethod || amount != originalAmount
+    val isFormValid = isAmountValid && amount.isNotBlank() && name.trim().isNotBlank() && method.trim().isNotBlank()
+    val canSave = hasChanges && isFormValid
     val fieldColors = OutlinedTextFieldDefaults.colors(
         focusedBorderColor = FieldBorderColor,
         unfocusedBorderColor = FieldBorderColor,
@@ -363,7 +408,13 @@ private fun InlineEditForm(
         ) {
             OutlinedTextField(
                 value = name,
-                onValueChange = onNameChange,
+                onValueChange = { newValue ->
+                    if (newValue.length <= 25) {
+                        onNameChange(newValue)
+                    } else {
+                        Toast.makeText(context, "Maximum 25 characters allowed", Toast.LENGTH_SHORT).show()
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
@@ -387,7 +438,13 @@ private fun InlineEditForm(
         ) {
             OutlinedTextField(
                 value = method,
-                onValueChange = onMethodChange,
+                onValueChange = { newValue ->
+                    if (newValue.length <= 25) {
+                        onMethodChange(newValue)
+                    } else {
+                        Toast.makeText(context, "Maximum 25 characters allowed", Toast.LENGTH_SHORT).show()
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
@@ -413,9 +470,13 @@ private fun InlineEditForm(
                 OutlinedTextField(
                     value = amount,
                     onValueChange = { newValue ->
-                        // Allow digits and decimal point
-                        if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d*$"))) {
-                            onAmountChange(newValue)
+                        // Only allow digits, no decimal point
+                        if (newValue.isEmpty() || newValue.all { it.isDigit() }) {
+                            if (newValue.length <= 9) {
+                                onAmountChange(newValue)
+                            } else {
+                                Toast.makeText(context, "Expense value cannot exceed 9 digits", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     },
                     modifier = Modifier
@@ -424,7 +485,7 @@ private fun InlineEditForm(
                     singleLine = true,
                     shape = fieldShape,
                     colors = if (isAmountValid) fieldColors else errorFieldColors,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     prefix = {
                         Text(
                             text = "$ ",
@@ -487,7 +548,7 @@ private fun InlineEditForm(
             // Done — filled dark
             Button(
                 onClick = onDone,
-                enabled = isAmountValid && amount.isNotBlank(),
+                enabled = canSave,
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = DoneButtonColor,
