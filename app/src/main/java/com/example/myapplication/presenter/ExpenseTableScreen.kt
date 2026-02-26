@@ -29,7 +29,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,6 +57,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.domain.Expense
 import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
+import com.example.myapplication.R
 
 // ─── Colors ───────────────────────────────────────────────────────────────────
 private val BackgroundColor = Color(0xFFF5F5F5)
@@ -119,7 +121,7 @@ fun ExpenseTableScreen(
                     ExpenseTableHeader(
                         modifier = Modifier.alpha(if (isEditing) backgroundAlpha else 1f)
                     )
-                    Divider(color = DividerColor, thickness = 1.dp)
+                    HorizontalDivider(color = DividerColor, thickness = 1.dp)
                 }
 
                 // ── Expense Rows ──────────────────────────────────────
@@ -174,17 +176,17 @@ fun ExpenseTableScreen(
                             originalMethod = originalMethod,
                             originalAmount = originalAmount,
                             onNameChange = { newValue ->
-                                if (newValue.length <= 25) {
+                                if (newValue.length <= 15) {
                                     editName = newValue
                                 } else {
-                                    Toast.makeText(context, "Maximum 25 characters allowed", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "Maximum 15 characters allowed", Toast.LENGTH_SHORT).show()
                                 }
                             },
                             onMethodChange = { newValue ->
-                                if (newValue.length <= 25) {
+                                if (newValue.length <= 15) {
                                     editMethod = newValue
                                 } else {
-                                    Toast.makeText(context, "Maximum 25 characters allowed", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "Maximum 15 characters allowed", Toast.LENGTH_SHORT).show()
                                 }
                             },
                             onAmountChange = { newValue ->
@@ -217,7 +219,7 @@ fun ExpenseTableScreen(
                         )
                     }
 
-                    Divider(
+                    HorizontalDivider(
                         color = DividerColor,
                         thickness = 1.dp,
                         modifier = Modifier.alpha(
@@ -237,7 +239,7 @@ private fun ExpenseTableHeader(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 16.dp),
+            .padding(horizontal = 8.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
@@ -245,7 +247,7 @@ private fun ExpenseTableHeader(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                painter = painterResource(id = android.R.drawable.ic_menu_info_details),
+                painter = painterResource(id = R.drawable.ic_expense),
                 contentDescription = null,
                 tint = HeaderIconColor,
                 modifier = Modifier.size(18.dp)
@@ -255,7 +257,9 @@ private fun ExpenseTableHeader(modifier: Modifier = Modifier) {
                 text = "Expense",
                 color = HeaderTextColor,
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
 
@@ -264,7 +268,7 @@ private fun ExpenseTableHeader(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                painter = painterResource(id = android.R.drawable.ic_menu_agenda),
+                painter = painterResource(id = R.drawable.ic_method),
                 contentDescription = null,
                 tint = HeaderIconColor,
                 modifier = Modifier.size(18.dp)
@@ -274,16 +278,18 @@ private fun ExpenseTableHeader(modifier: Modifier = Modifier) {
                 text = "Method",
                 color = HeaderTextColor,
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
 
         Row(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1.4f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                painter = painterResource(id = android.R.drawable.ic_menu_sort_by_size),
+                painter = painterResource(id = R.drawable.ic_amount),
                 contentDescription = null,
                 tint = HeaderIconColor,
                 modifier = Modifier.size(18.dp)
@@ -293,7 +299,9 @@ private fun ExpenseTableHeader(modifier: Modifier = Modifier) {
                 text = "Amount",
                 color = HeaderTextColor,
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
 
@@ -313,31 +321,37 @@ private fun ExpenseRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 18.dp),
+            .padding(horizontal = 8.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = expense.expenseName,
             modifier = Modifier.weight(1.4f),
             color = ExpenseNameColor,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
 
         Text(
             text = expense.method,
             modifier = Modifier.weight(1.4f),
             color = MethodTextColor,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Normal
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Normal,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
 
         Text(
             text = "$${expense.amount.toLong()}",
-            modifier = Modifier.weight(1f),
-            color = AmountTextColor,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium
+            modifier = Modifier.weight(1.4f),
+            color = MethodTextColor,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
 
         IconButton(
@@ -346,7 +360,7 @@ private fun ExpenseRow(
             modifier = Modifier.size(40.dp)
         ) {
             Icon(
-                painter = painterResource(id = android.R.drawable.ic_menu_edit),
+                painter = painterResource(id = R.drawable.ic_edit),
                 contentDescription = "Edit ${expense.expenseName}",
                 tint = EditIconColor,
                 modifier = Modifier.size(20.dp)
@@ -399,20 +413,20 @@ private fun InlineEditForm(
         modifier = Modifier
             .fillMaxWidth()
             .background(CardBackground)
-            .padding(horizontal = 20.dp, vertical = 16.dp)
+            .padding(horizontal = 8.dp, vertical = 12.dp)
     ) {
         // ── Expense Field ─────────────────────────────────────────
         EditFieldRow(
-            iconRes = android.R.drawable.ic_menu_info_details,
+            iconRes = R.drawable.ic_expense,
             label = "Expense"
         ) {
             OutlinedTextField(
                 value = name,
                 onValueChange = { newValue ->
-                    if (newValue.length <= 25) {
+                    if (newValue.length <= 15) {
                         onNameChange(newValue)
                     } else {
-                        Toast.makeText(context, "Maximum 25 characters allowed", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Maximum 15 characters allowed", Toast.LENGTH_SHORT).show()
                     }
                 },
                 modifier = Modifier
@@ -433,16 +447,16 @@ private fun InlineEditForm(
 
         // ── Method Field ──────────────────────────────────────────
         EditFieldRow(
-            iconRes = android.R.drawable.ic_menu_agenda,
+            iconRes = R.drawable.ic_method,
             label = "Method"
         ) {
             OutlinedTextField(
                 value = method,
                 onValueChange = { newValue ->
-                    if (newValue.length <= 25) {
+                    if (newValue.length <= 15) {
                         onMethodChange(newValue)
                     } else {
-                        Toast.makeText(context, "Maximum 25 characters allowed", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Maximum 15 characters allowed", Toast.LENGTH_SHORT).show()
                     }
                 },
                 modifier = Modifier
@@ -463,7 +477,7 @@ private fun InlineEditForm(
 
         // ── Amount Field ──────────────────────────────────────────
         EditFieldRow(
-            iconRes = android.R.drawable.ic_menu_sort_by_size,
+            iconRes = R.drawable.ic_amount,
             label = "Amount"
         ) {
             Column {
@@ -507,7 +521,7 @@ private fun InlineEditForm(
                         text = "Please enter a valid amount",
                         color = ErrorColor,
                         fontSize = 12.sp,
-                        modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                        modifier = Modifier.padding(start = 4.dp, top = 4.dp)
                     )
                 }
             }
@@ -556,7 +570,7 @@ private fun InlineEditForm(
                 )
             ) {
                 Icon(
-                    painter = painterResource(id = android.R.drawable.ic_menu_save),
+                    painter = painterResource(id = R.drawable.ic_check),
                     contentDescription = null,
                     modifier = Modifier.size(16.dp),
                     tint = Color.White
@@ -585,7 +599,7 @@ private fun EditFieldRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            modifier = Modifier.width(110.dp),
+            modifier = Modifier.width(90.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
