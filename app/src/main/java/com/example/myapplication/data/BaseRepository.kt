@@ -8,16 +8,9 @@ abstract class BaseRepository() {
 
     @Inject
     lateinit var globalEventManager: GlobalEventManager
-    protected suspend fun <T> executeApiCall(apiCall: suspend () -> BaseResponse<T>): Result<T> {
+    protected suspend fun <T> executeApiCall(apiCall: suspend () -> T): Result<T> {
         return try {
-            val response = apiCall()
-            if (response.status == "OK") {
-                response.data?.let {
-                    Result.success(it)
-                } ?: Result.failure(Exception(response.message))
-            } else {
-                Result.failure(Exception(response.message))
-            }
+            Result.success(apiCall())
         } catch (e: CancellationException) {
             throw e
         } catch (e: HttpException) {

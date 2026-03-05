@@ -13,9 +13,7 @@ class ProductRepositoryImpl @Inject constructor(
     ProductRepository, BaseRepository() {
     override suspend fun fetchProducts(): Result<List<Product>> {
         return executeApiCall {
-            apiService.getProducts().products
-        }.map { dtos ->
-            dtos.map { it.toProduct() }
+            apiService.getProducts().products.map { it.toProduct() }
         }
     }
 }
