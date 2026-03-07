@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.myapplication.domain.NotesRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -23,32 +22,31 @@ object DatabaseModule {
         return Room.databaseBuilder(context, AppDatabase::class.java, AppDatabase.NAME).build()
     }
 
-    @Provides
-    fun provideExpenseDao(db: AppDatabase): NotesDao = db.expenseDao()
+//    @Provides
+//    fun provideExpenseDao(db: AppDatabase): NotesDao = db.expenseDao()
 }
 
 
-@Database(
-    entities = [NotesEntity::class],
-    version = 1, 
-    exportSchema = false
-)
+//@Database(
+//    entities = [NotesEntity::class],
+//    version = 1,
+//    exportSchema = false
+//)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun expenseDao(): NotesDao
+//    abstract fun expenseDao(): NotesDao
 
     companion object {
         const val NAME = "app_db"
     }
 }
 
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class RepositoryModule {
-
-    @Binds
-    @Singleton  
-    abstract fun bindExpenseRepository(
-        impl: NotesRepositoryImpl
-    ): NotesRepository
-}
+//@Module
+//@InstallIn(SingletonComponent::class)
+// interface RepositoryModule {
+//    @Binds
+//    @Singleton
+//    fun bindExpenseRepository(
+//        impl: NotesRepositoryImpl
+//    ): NotesRepository
+//}
