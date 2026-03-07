@@ -14,10 +14,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -32,12 +34,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
+import com.example.myapplication.presenter.viewmodels.ProductViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -51,7 +55,9 @@ val LocalNavController = compositionLocalOf<NavController> {
 class MainActivity : ComponentActivity() {
 
 
-//    private lateinit var viewModel: ProductViewModel
+    private var viewModel = lazy {
+        ViewModelProvider(this)[ProductViewModel::class.java]
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +72,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyApplicationTheme {
-
+                val uiState by viewModel.value.uiState.collectAsStateWithLifecycle()
+                ProductListScreen(uiState)
 
 
 //                val navController = rememberNavController()
@@ -89,13 +96,34 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
-fun RedBox() {
-    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(modifier = Modifier.height(100.dp).width(100.dp).background(color = Color.Red))
+fun ProductListScreen(uiState: ProductUiState) {
+    when (uiState) {
+        ProductUiState.Empty -> {}
+        is ProductUiState.Error -> {}
+        ProductUiState.Loading -> {}
+        is ProductUiState.Success -> {
+            LazyColumn {
+                items(items = uiState.productsList, key = {it.id}) {
+                    Text(color = Color.Black, text = it.title)
+                }
+            }
+        }
     }
 }
 
+@Composable
+fun RedBox() {
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(
+            modifier = Modifier
+                .height(100.dp)
+                .width(100.dp)
+                .background(color = Color.Red)
+        )
+    }
+}
 
 
 @Preview(showBackground = true)
