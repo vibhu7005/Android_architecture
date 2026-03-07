@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -55,9 +56,7 @@ val LocalNavController = compositionLocalOf<NavController> {
 class MainActivity : ComponentActivity() {
 
 
-    private var viewModel = lazy {
-        ViewModelProvider(this)[ProductViewModel::class.java]
-    }
+    private val viewModel : ProductViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,7 +71,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyApplicationTheme {
-                val uiState by viewModel.value.uiState.collectAsStateWithLifecycle()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                 ProductListScreen(uiState)
 
 
