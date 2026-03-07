@@ -17,20 +17,27 @@ object RetrofitInstance {
 
     private const val BASE_URL = "https://dummyjson.com/"
 
-    private val loggingInterceptor = HttpLoggingInterceptor { message ->
-        Log.d("API_LOG", message)
-    }.apply {
-        level = HttpLoggingInterceptor.Level.BODY
+    @Provides
+    @Singleton
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor { message ->
+            Log.d("API_LOG", message)
+        }.apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
     }
-
-    private val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
-        .build()
-
 
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
+    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
