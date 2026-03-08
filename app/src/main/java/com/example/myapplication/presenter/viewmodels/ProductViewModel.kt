@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.presenter.ProductUiState
+import com.example.myapplication.presenter.toUiModel
 import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import domain.usecases.FetchProductsListUseCase
@@ -28,7 +29,7 @@ class ProductViewModel @Inject constructor(private val useCase: FetchProductsLis
             _uiState.value = ProductUiState.Loading
             useCase().onSuccess {
                 Log.d("vaibhav", "fetchProducts: ${it.size}")
-                _uiState.value = ProductUiState.Success(it)
+                _uiState.value = ProductUiState.Success(it.map { product -> product.toUiModel() })
             }
                 .onFailure {
                     Log.d("vaibhav", "fetchProducts: ${it.message}")
