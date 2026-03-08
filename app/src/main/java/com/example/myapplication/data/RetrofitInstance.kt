@@ -1,7 +1,7 @@
 package com.example.myapplication.data
 
 import android.util.Log
-import dagger.Binds
+import com.example.myapplication.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,20 +18,24 @@ object RetrofitInstance {
 
     private const val BASE_URL = "https://dummyjson.com/"
 
-    private val loggingInterceptor = HttpLoggingInterceptor { message ->
-        Log.d("API_LOG", message)
-    }.apply {
-        level = HttpLoggingInterceptor.Level.BODY
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+        if (BuildConfig.DEBUG) {
+            val loggingInterceptor = HttpLoggingInterceptor { message ->
+                Log.d("API_LOG", message)
+            }.apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+            builder.addInterceptor(loggingInterceptor)
+        }
+        return builder.build()
     }
-
-    private val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
-        .build()
-
 
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -39,8 +43,8 @@ object RetrofitInstance {
             .build()
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideApiService(retrofit: Retrofit) =
-//        retrofit.create(ProductApiService::class.java)
+    @Provides
+    @Singleton
+    fun provideApiService(retrofit: Retrofit) =
+        retrofit.create(ProductApiService::class.java)
 }
