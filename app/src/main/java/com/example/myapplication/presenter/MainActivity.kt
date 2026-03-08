@@ -74,20 +74,21 @@ class MainActivity : ComponentActivity() {
                 RedBox()
 
 
-//                val navController = rememberNavController()
-//                CompositionLocalProvider(LocalNavController provides navController) {
-//                    NavHost(
-//                        navController = navController,
-//                        startDestination = Routes.ProductList.route
-//                    ) {
-//                        composable(Routes.ProductList.route) {
-//                            ProductListScreen(viewModel)
-//                        }
-//                        composable(Routes.ProductDetail.route) {
-//                            DetailScreen()
-//                        }
-//                    }
-//                }
+                val navController = rememberNavController()
+                CompositionLocalProvider(LocalNavController provides navController) {
+                    NavHost(
+                        navController = navController,
+                        startDestination = Home
+                    ) {
+                        composable<Home>{
+                            HomeScreen()
+                        }
+                        composable<Details> { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id").orEmpty()
+                            ProductDetailsScreen(id)
+                        }
+                    }
+                }
             }
         }
 
