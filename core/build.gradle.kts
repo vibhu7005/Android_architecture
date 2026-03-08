@@ -12,5 +12,7 @@ kotlin {
     }
 }
 dependencies {
-    implementation("com.google.dagger:hilt-core:${libs.versions.hilt.get()}")
+    dependencies {
+        implementation("javax.inject:javax.inject:1")
+    }
 }
