@@ -1,7 +1,6 @@
 package com.example.myapplication.data
 
 import android.util.Log
-import com.example.myapplication.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +13,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RetrofitInstance {
+object NetworkModule {
 
     private const val BASE_URL = "https://dummyjson.com/"
 
@@ -22,14 +21,13 @@ object RetrofitInstance {
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder()
-        if (BuildConfig.DEBUG) {
-            val loggingInterceptor = HttpLoggingInterceptor { message ->
-                Log.d("API_LOG", message)
-            }.apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }
-            builder.addInterceptor(loggingInterceptor)
+        val loggingInterceptor = HttpLoggingInterceptor { message ->
+            Log.d("API_LOG", message)
+        }.apply {
+            level = HttpLoggingInterceptor.Level.BODY
         }
+        builder.addInterceptor(loggingInterceptor)
+
         return builder.build()
     }
 
