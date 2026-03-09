@@ -42,6 +42,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
+import com.example.myapplication.presenter.viewmodel.ProductDetailViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -55,7 +56,7 @@ val LocalNavController = compositionLocalOf<NavController> {
 class MainActivity : ComponentActivity() {
 
 
-//    private val viewModel : ProductViewModel by viewModels()
+//    private val viewModel : ProductDetailViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,24 +71,26 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyApplicationTheme {
+//                HomeScreen()
 //                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                RedBox()
+//                RedBox()
 
 
-//                val navController = rememberNavController()
-//                CompositionLocalProvider(LocalNavController provides navController) {
-//                    NavHost(
-//                        navController = navController,
-//                        startDestination = Routes.ProductList.route
-//                    ) {
-//                        composable(Routes.ProductList.route) {
-//                            ProductListScreen(viewModel)
-//                        }
-//                        composable(Routes.ProductDetail.route) {
-//                            DetailScreen()
-//                        }
-//                    }
-//                }
+                val navController = rememberNavController()
+                CompositionLocalProvider(LocalNavController provides navController) {
+                    NavHost(
+                        navController = navController,
+                        startDestination = Home
+                    ) {
+                        composable<Home>{
+                            HomeScreen()
+                        }
+                        composable<Detail> { backstack ->
+                            val id = backstack.arguments?.getString("id").orEmpty()
+                            DetailScreen(id)
+                        }
+                    }
+                }
             }
         }
 
